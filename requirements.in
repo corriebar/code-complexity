@@ -1,0 +1,7 @@
+flake8-functions
+flake8-expression-complexity
+cognitive-complexity
+gspread-dataframe
+gspread-formatting
+plotnine
+pandas
