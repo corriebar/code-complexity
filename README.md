@@ -10,4 +10,4 @@ To install the necessary python packages, run the following command in the root 
 
 ## Slides
 
-The slides for the talk can be found here.
+The slides for the talk can be found [here](https://www.slideshare.net/ssuser326801/code-cleanup-a-data-scientists-guide-to-sparkling-code).
