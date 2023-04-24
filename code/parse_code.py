@@ -1,5 +1,6 @@
 import ast
 import itertools
+import os
 from pathlib import Path
 from typing import Callable, Iterable, List, Tuple
 
@@ -7,6 +8,7 @@ from typing import Callable, Iterable, List, Tuple
 _IGNORE_DIRS = {
     "notebooks",
     ".ipynb_checkpoints",
+    os.sep + "build" + os.sep,
 }
 
 
