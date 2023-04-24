@@ -1,7 +1,13 @@
 import ast
 import itertools
-import os
+from pathlib import Path
 from typing import Callable, Iterable, List, Tuple
+
+
+_IGNORE_DIRS = {
+    "notebooks",
+    ".ipynb_checkpoints",
+}
 
 
 def parse_file(filepath):
@@ -10,16 +16,12 @@ def parse_file(filepath):
     return file_parsed
 
 
-def get_all_python_files(repo_path, repo):
+def get_all_python_files(repo_path, repo) -> List[Path]:
     python_files = []
-    for path, _, files in os.walk(f"{repo_path}/{repo}"):
-        is_notebooks_folder = "/notebooks" in path
-        is_checkpoints_folder = ".ipynb_checkpoints" in path
-        ignore_folder = is_notebooks_folder or is_checkpoints_folder
-        for name in files:
-            if name.endswith(".py") and not ignore_folder:
-                rel_path = path.removeprefix(f"{repo_path}/{repo}")
-                python_files.append((rel_path, name))
+    for fp_py in Path(repo_path).glob("**/*.py"):
+        if fp_py.is_dir() or any(d in str(fp_py) for d in _IGNORE_DIRS):
+            continue
+        python_files.append(fp_py)
     return python_files
 
 
