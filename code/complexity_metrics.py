@@ -1,4 +1,6 @@
 import datetime
+from pathlib import Path
+
 from flake8_functions.function_length import get_function_start_row, get_function_last_row
 from cognitive_complexity.api import get_cognitive_complexity
 from flake8_expression_complexity.utils.complexity import get_expression_complexity
@@ -92,30 +94,34 @@ def get_module_function_complexities(module):
     return complexities
 
 
-def get_file_complexities(repo_path, repo, file_path, file_name):
-    module = parse_file(f"{repo_path}/{repo}/{file_path}/{file_name}")
+def get_file_complexities(repo_path: Path, filepath: Path):
+    module = parse_file(filepath)
 
     function_complexities = get_module_function_complexities(module)
 
     module_complexities = get_module_complexities(module)
 
+    rel_path = str(filepath.relative_to(repo_path))
     module_function_complexities = [
-        {**d, **module_complexities, "file": f"{file_path}/{file_name}"}
+        {**d, **module_complexities, "file": rel_path}
         for d in function_complexities
     ]
     return module_function_complexities
 
 
-def get_repo_complexities(repo_path, repo):
-    python_files = get_all_python_files(repo_path, repo)
+def get_repo_complexities(repo_path):
+    repo_path = Path(repo_path)
+    repo_name = repo_path.name
+
+    python_files = get_all_python_files(repo_path, repo_name)
     complexities = []
-    for file_path, file_name in python_files:
-        module_function_complexities = get_file_complexities(repo_path, repo, file_path, file_name)
+    for file_path in python_files:
+        module_function_complexities = get_file_complexities(repo_path, file_path)
 
         complexities.extend(module_function_complexities)
 
     df = pd.DataFrame(complexities)
-    df["repo"] = repo
+    df["repo"] = repo_name
     df = add_extract_date(df)
     return df[COMPLEXITY_COLUMNS].sort_values(
         by=["cognitive_complexity", "func_length"], ascending=False
