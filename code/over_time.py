@@ -92,7 +92,7 @@ def eval_by_commit(
         or ``None`` in case of syntax errors at the respective commit.
     """
     status = git_status(dp)
-    if "working tree clean" not in status and "nothing added to commit but untracked" not in status:
+    if not ("working tree clean" in status or "nothing added to commit but untracked" in status):
         raise Exception(f"The git status of '{dp}' is unclean:\n\n{status}")
     branch = git_current_branch(dp)
     results = {}
