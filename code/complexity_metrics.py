@@ -130,7 +130,7 @@ def get_repo_complexities(repo_path):
 
         complexities.extend(module_function_complexities)
 
-    df = pd.DataFrame(complexities)
+    df = pd.DataFrame(complexities, columns=COMPLEXITY_COLUMNS)
     df["repo"] = repo_name
     df = add_extract_date(df)
     return df[COMPLEXITY_COLUMNS].sort_values(

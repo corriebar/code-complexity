@@ -55,7 +55,7 @@ def git_current_branch(dp: PathLike) -> str:
 
 def git_checkout(dp: PathLike, commit_or_branch: str):
     """Check out a specific branch or commit in the repository under `dp`."""
-    output = subprocess.check_output(["git", "-C", str(dp), "checkout", commit_or_branch])
+    output = subprocess.check_output(["git", "-C", str(dp), "checkout", commit_or_branch], stderr=subprocess.DEVNULL)
     output = output.strip().decode("ascii")
     return output
 
@@ -105,6 +105,7 @@ def eval_by_commit(
         except:
             print(f"Failed to apply function at commit {commit}")
             if raise_on_error:
+                git_checkout(dp, branch)
                 raise
     print(f"\nEvaluations completed. Checking out branch '{branch}'.")
     git_checkout(dp, branch)
