@@ -17,11 +17,7 @@ from code.parse_code import (
 
 import pandas as pd
 
-COMPLEXITY_COLUMNS = [
-    "repo",
-    "file",
-    "function_name",
-    "func_lineno",
+COMPLEXITY_METRICS = [
     "func_length",
     "cognitive_complexity",
     "sum_expression_complexity",
@@ -30,8 +26,22 @@ COMPLEXITY_COLUMNS = [
     "num_returns",
     "num_module_expressions",
     "module_complexity",
-    "extract_date"
 ]
+"""
+Only the metrics columns of the complexity analysis.
+
+This can be used e.g. to summarize the DataFrame.
+"""
+
+COMPLEXITY_COLUMNS = [
+    "repo",
+    "file",
+    "function_name",
+    "func_lineno",
+    "extract_date",
+    *COMPLEXITY_METRICS,
+]
+"""All columns to expect in a complexity analysis DataFrame."""
 
 COLUMN_TYPES = {
     "repo": str,
@@ -120,7 +130,7 @@ def get_repo_complexities(repo_path):
 
         complexities.extend(module_function_complexities)
 
-    df = pd.DataFrame(complexities)
+    df = pd.DataFrame(complexities, columns=COMPLEXITY_COLUMNS)
     df["repo"] = repo_name
     df = add_extract_date(df)
     return df[COMPLEXITY_COLUMNS].sort_values(
